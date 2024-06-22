@@ -1,7 +1,7 @@
 // const isUndefined = require('lodash/isUndefined')
 // const isString = require('lodash/isString')
 import pkg from 'lodash'
-const {isUndefined, isString} = pkg;
+const { isUndefined, isString } = pkg
 
 /**
  * 将{ param } 替换为真实值
@@ -9,7 +9,7 @@ const {isUndefined, isString} = pkg;
  * @param { String} param 变量名
  * @param { String | Number } value 变量值
  */
-function replaceParam (raw, param, value) {
+function replaceParam(raw, param, value) {
   if (typeof raw === 'undefined' || raw === '') {
     return ''
   }
@@ -23,14 +23,14 @@ function replaceParam (raw, param, value) {
  * @param queryStr { String } 查询语句
  * @param params { any | Object } 变量
  */
-function formatQuery (queryStr, params = {}) {
+function formatQuery(queryStr, params = {}) {
   let raw = isUndefined(queryStr) || !isString(queryStr) ? '' : queryStr
 
   if (isUndefined(params)) {
     return raw
   }
 
-  Object.keys(params).forEach(key => {
+  Object.keys(params).forEach((key) => {
     raw = replaceParam(raw, key, params[key])
   })
 

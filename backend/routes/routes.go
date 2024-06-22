@@ -7,8 +7,17 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine) {
+    r.Static("/js", "./html/js")
+    r.Static("/img", "./html/img")
+    r.Static("/assets", "./html/assets")
+    r.StaticFile("/", "./html/index.html")
+    r.StaticFile("/login", "./html/index.html")
+    r.StaticFile("/index.html", "./html/index.html")
+    r.StaticFile("/favicon.ico", "./html/favicon.ico")
+
     v1 := r.Group("/api/v1")
     {
+
         v1.POST("/register", controllers.Register)
         v1.POST("/login", controllers.Login)
 

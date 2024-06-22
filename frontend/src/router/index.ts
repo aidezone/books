@@ -20,13 +20,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: Login
-    },
-    
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated()) {
       next({ name: 'login' })
     } else {
@@ -36,6 +35,5 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-
 
 export default router

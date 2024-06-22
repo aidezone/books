@@ -20,7 +20,7 @@
 <script>
 import { reactive, ref } from 'vue'
 import { accountLogin } from '@/service/auth'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'Login',
@@ -31,24 +31,20 @@ export default {
     })
 
     const rules = {
-      username: [
-        { required: true, message: 'Please input username', trigger: 'blur' }
-      ],
-      password: [
-        { required: true, message: 'Please input password', trigger: 'blur' }
-      ]
+      username: [{ required: true, message: 'Please input username', trigger: 'blur' }],
+      password: [{ required: true, message: 'Please input password', trigger: 'blur' }]
     }
 
     const loginFormRef = ref(null)
-    const router = useRouter();
+    const router = useRouter()
     const handleLogin = () => {
       loginFormRef.value.validate(async (valid) => {
         if (valid) {
           const resp = await accountLogin(loginForm.value)
-          console.log("login response:",resp)
+          console.log('login response:', resp)
           if (resp.status == 200) {
-            localStorage.setItem("token", resp.data.token)
-            router.push({ name: 'home' });
+            localStorage.setItem('token', resp.data.token)
+            router.push({ name: 'home' })
             // router.push('/');
           }
         } else {

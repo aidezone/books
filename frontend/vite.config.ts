@@ -16,6 +16,9 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    target: 'esnext', // 确保编译目标支持顶层 await
+  },
   plugins: [
     vue(),
     // vueDevTools(),

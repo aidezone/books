@@ -41,6 +41,7 @@ Books Manage System 是一个图书管理系统，提供用户注册、登录、
 ## 环境依赖
 
 - Go 1.19+
+- Node v22.3.0
 - MySQL 数据库
 
 ## 安装与运行
@@ -74,83 +75,39 @@ JWT_SECRET=<your_jwt_secret>
 ### 生成Swagger文档
 
 ```sh
-swag init
+cd backend
+swag init --parseDependency --parseInternal
+cp docs/swagger.json ../frontend/.swagger/books.swagger.json
+cd ../frontend
+npm run sw2dts
 ```
 
 ### 启动项目
 
 ```sh
-go run cmd/main.go
+cd backend
+go run main.go
+
+cd ../frontend
+npm run dev
 ```
 
 ### 查看API文档
 
 启动项目后，在浏览器中访问 `http://localhost:8080/swagger/index.html` 查看Swagger UI。
 
-## 使用说明
+## Docker支持
 
-### 用户注册
+### 编译镜像
 
-```
-POST /api/v1/register
-{
-    "username": "example",
-    "password": "password",
-    "role": "user" // or "admin"
-}
+```sh
+docker build . -t leiyu465/books:v1.0.0
 ```
 
-### 用户登录
+### 运行docker-compose
 
-```
-POST /api/v1/login
-{
-    "username": "example",
-    "password": "password"
-}
-```
-
-### 添加图书（管理员权限）
-
-```
-POST /api/v1/books
-Authorization: Bearer <token>
-{
-    "title": "Book Title",
-    "author": "Author Name",
-    "category": "Category",
-    "quantity": 10,
-    "available": 10
-}
-```
-
-### 查询图书
-
-```
-GET /api/v1/books/:id
-Authorization: Bearer <token>
-```
-
-### 更新图书（管理员权限）
-
-```
-PUT /api/v1/books
-Authorization: Bearer <token>
-{
-    "id": 1,
-    "title": "Updated Book Title",
-    "author": "Updated Author Name",
-    "category": "Updated Category",
-    "quantity": 5,
-    "available": 5
-}
-```
-
-### 删除图书（管理员权限）
-
-```
-DELETE /api/v1/books/:id
-Authorization: Bearer <token>
+```sh
+docker-compose up
 ```
 
 ## 贡献

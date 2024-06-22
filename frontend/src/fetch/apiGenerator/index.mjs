@@ -5,9 +5,9 @@
 
 // import {isFunction, isEmpty, assign} from 'lodash'
 
-import pkg from 'lodash';
+import pkg from 'lodash'
 import Utils from './utils.mjs'
-const {isFunction, isEmpty, assign, isObject} = pkg;
+const { isFunction, isEmpty, assign, isObject } = pkg
 
 /**
  * 生成API
@@ -16,11 +16,11 @@ const {isFunction, isEmpty, assign, isObject} = pkg;
  * @param { String } info 当前url对应的信息
  */
 function createAPI(namespace, url, info) {
-  console.log("createAPI", url)
+  console.log('createAPI', url)
   let api = {}
   const methods = Object.keys(info) // 获取当前api的所有 请求方法
 
-  methods.forEach(method => {
+  methods.forEach((method) => {
     const current = info[method] // 当前方法下定义的对象
     const key = namespace + ':' + current.operationId
     const operation = {}
@@ -46,9 +46,7 @@ function collectSwaggerInfo(context) {
   if (isFunction(context)) {
     context.keys().forEach(function collector(key) {
       const files = key.split('/')
-      const namespace = files[files.length - 1]
-        .replace(new RegExp('\\./'), '')
-        .split('.')[0]
+      const namespace = files[files.length - 1].replace(new RegExp('\\./'), '').split('.')[0]
 
       result.push({
         namespace,
@@ -68,19 +66,17 @@ async function collectSwaggerInfoByObj(context, callback) {
     const keys = Object.keys(context)
 
     // keys.forEach(async (key) => {
-    for (let i=0;i<keys.length;i++) {
+    for (let i = 0; i < keys.length; i++) {
       let key = keys[i]
-      const moduleInfo = await context[key]();
-      console.log(`Loaded module: ${key}`, moduleInfo);
+      const moduleInfo = await context[key]()
+      console.log(`Loaded module: ${key}`, moduleInfo)
 
       // 根据路径或内容类型处理模块
       if (key.endsWith('.swagger.json')) {
         // 处理 Swagger JSON 文件
-        console.log('Processing Swagger JSON:', moduleInfo);
+        console.log('Processing Swagger JSON:', moduleInfo)
         const files = key.split('/')
-        const namespace = files[files.length - 1]
-          .replace(new RegExp('\\./'), '')
-          .split('.')[0]
+        const namespace = files[files.length - 1].replace(new RegExp('\\./'), '').split('.')[0]
 
         result.push({
           namespace,
@@ -89,16 +85,14 @@ async function collectSwaggerInfoByObj(context, callback) {
         })
       } else {
         // 处理其他类型的文件
-        console.log('Processing other file type:', moduleInfo);
+        console.log('Processing other file type:', moduleInfo)
       }
     }
     // });
-    
   }
 
   return result
 }
-
 
 /**
  * 将请求信息和提供的请求库的配置信息对齐
@@ -140,7 +134,7 @@ async function createAllAPI(context) {
   }
 
   if (swaggers) {
-    swaggers.forEach(swagger => {
+    swaggers.forEach((swagger) => {
       if (isEmpty(swagger.path)) {
         return
       }
@@ -148,14 +142,10 @@ async function createAllAPI(context) {
       const urls = Object.keys(swagger.path) // 获取当前swagger下所有的请求路径
       const { basePath, namespace, path } = swagger
 
-      urls.forEach(url => {
+      urls.forEach((url) => {
         result = assign(
           result,
-          createAPI(
-            namespace,
-            basePath === '/' ? url : basePath + url,
-            path[url]
-          )
+          createAPI(namespace, basePath === '/' ? url : basePath + url, path[url])
         )
       })
     })
@@ -172,10 +162,7 @@ async function createAllAPI(context) {
  * @returns { Function }
  */
 function createFetch(apis, fetcher, adapter = defaultAdapter) {
-  return function fetch(
-    operationId,
-    config = { path: {}, body: {}, query: {} }
-  ) {
+  return function fetch(operationId, config = { path: {}, body: {}, query: {} }) {
     const api = apis[operationId]
     if (!api) {
       throw new Error('错误的OperationId: ' + operationId)

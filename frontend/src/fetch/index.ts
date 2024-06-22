@@ -1,14 +1,13 @@
-import axiosInstance from "./axios/instance";
-import ApiGenerator from "@/fetch/apiGenerator/index";
+import axiosInstance from './axios/instance'
+import ApiGenerator from '@/fetch/apiGenerator/index'
 
+const swaggerContext = import.meta.glob('../../.swagger/*.swagger.json')
 
-const swaggerContext = import.meta.glob('../../.swagger/*.swagger.json');
+const apis = await ApiGenerator.createAllAPI(swaggerContext)
+const fetch = ApiGenerator.createFetch(apis, axiosInstance)
 
-const apis = await ApiGenerator.createAllAPI(swaggerContext);
-const fetch = ApiGenerator.createFetch(apis, axiosInstance);
-
-if (process.env.NODE_ENV === "development") {
-  console.table(ApiGenerator.collectSwaggerInfo(swaggerContext));
+if (process.env.NODE_ENV === 'development') {
+  console.table(ApiGenerator.collectSwaggerInfo(swaggerContext))
 }
 
 /**
@@ -21,9 +20,9 @@ if (process.env.NODE_ENV === "development") {
 export default fetch as (
   operationId: string,
   data?: Partial<{
-    path: object;
-    body: any;
-    query: object;
-    header: object;
+    path: object
+    body: any
+    query: object
+    header: object
   }>
-) => Promise<any>;
+) => Promise<any>
