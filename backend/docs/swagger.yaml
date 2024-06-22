@@ -1,0 +1,573 @@
+basePath: /api/v1
+definitions:
+  controllers.BookResponse:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      quantity:
+        type: integer
+      title:
+        type: string
+    required:
+    - author
+    - category
+    - quantity
+    - title
+    type: object
+  controllers.BooksResponse:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/models.Book'
+        type: array
+      total:
+        type: integer
+    type: object
+  controllers.BorrowListResponse:
+    properties:
+      borrow_list:
+        items:
+          $ref: '#/definitions/models.Borrow'
+        type: array
+      total:
+        type: integer
+    type: object
+  controllers.BorrowResponse:
+    properties:
+      book_id:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      returned_at:
+        type: string
+      updatedAt:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  controllers.CommonResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  controllers.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  controllers.UserRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  models.Book:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      quantity:
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - author
+    - category
+    - quantity
+    - title
+    type: object
+  models.BookInfo:
+    properties:
+      author:
+        type: string
+      category:
+        type: string
+      quantity:
+        type: integer
+      title:
+        type: string
+    required:
+    - author
+    - category
+    - quantity
+    - title
+    type: object
+  models.Borrow:
+    properties:
+      book_id:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      returned_at:
+        type: string
+      updatedAt:
+        type: string
+      user_id:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server for a library management system.
+  title: Library Management API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: 获取图书列表
+      operationId: GetBookList
+      parameters:
+      - description: 关键词
+        in: query
+        name: keyword
+        required: true
+        type: string
+      - description: 检索类型
+        in: query
+        name: search_type
+        required: true
+        type: integer
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 分页大小
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BooksResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 查询图书
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: 创建新图书
+      operationId: CreateBook
+      parameters:
+      - description: Book
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BookResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建图书
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 根据ID删除图书
+      operationId: DeleteBook
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除图书
+      tags:
+      - books
+    get:
+      consumes:
+      - application/json
+      description: 根据ID获取图书
+      operationId: GetBook
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BookResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取图书
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: 根据ID更新图书
+      operationId: UpdateBook
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Book
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/models.BookInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BookResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新图书
+      tags:
+      - books
+  /books/borrow/{book_id}:
+    patch:
+      consumes:
+      - application/json
+      description: 用户借书
+      operationId: BorrowBook
+      parameters:
+      - description: Book ID
+        in: path
+        name: book_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BorrowResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: Book not found or out of stock
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 借书
+      tags:
+      - books
+  /books/borrowed/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户已借图书列表并支持分页
+      operationId: GetBorrowedBooks
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回借书记录列表
+          schema:
+            $ref: '#/definitions/controllers.BorrowListResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: Records not found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取已借图书列表
+      tags:
+      - books
+  /books/return/{borrow_id}:
+    patch:
+      consumes:
+      - application/json
+      description: 用户还书
+      operationId: ReturnBook
+      parameters:
+      - description: Borrow ID
+        in: path
+        name: borrow_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.BorrowResponse'
+        "400":
+          description: Invalid input
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: Borrow record not found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 还书
+      tags:
+      - books
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 用户通过用户名和密码登录
+      operationId: Login
+      parameters:
+      - description: payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      summary: 用户登录
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: 通过用户名和密码注册新用户
+      operationId: Register
+      parameters:
+      - description: payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.UserRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      summary: 注册新用户
+      tags:
+      - auth
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表并支持分页
+      operationId: GetUsers
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回用户列表
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Records not found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户列表
+      tags:
+      - users
+  /users/{id}/lock:
+    patch:
+      consumes:
+      - application/json
+      description: 根据ID锁定用户
+      operationId: LockUser
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User locked successfully
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 锁定用户
+      tags:
+      - users
+  /users/{id}/unlock:
+    patch:
+      consumes:
+      - application/json
+      description: 根据ID解锁用户
+      operationId: UnlockUser
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User locked successfully
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/controllers.CommonResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 解锁用户
+      tags:
+      - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
